@@ -1,3 +1,4 @@
 airflow/logs/*
+*.pid
 *.db
 *.cfg
