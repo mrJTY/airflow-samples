@@ -3,12 +3,12 @@
 export AIRFLOW_HOME=$(shell echo `pwd`)
 
 initdb:
-	echo $$AIRFLOW_HOME && airflow initdb
+	airflow initdb
 
-webserver: initdb
+webserver:
 	airflow webserver -p 8080
 
-scheaduler: initdb
+scheduler:
 	airflow scheduler
 
 clean:
