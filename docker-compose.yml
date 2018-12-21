@@ -1,6 +1,11 @@
 version: '3'
 
 services:
+  jumpbox:
+    image: postgres
+    command: tail -F anything
+    # psql -h postgres -U postgres
+
   airflow:
     # build:
     #   context: .
@@ -10,9 +15,9 @@ services:
     - "8080:8080"
     volumes:
     - .:/opt/airflow-samples
-    links:
-      - postgres
-    command: ["cd","/opt/airflow-samples","&&", "make", "webserver"]
+    environment:
+      - AIRFLOW_HOME=/opt/airflow-samples/airflow
+    command: bash /opt/airflow-samples/airflow_entrypoint.sh
 
   postgres:
     image: postgres
@@ -21,3 +26,7 @@ services:
       POSTGRES_PASSWORD: password123
     ports:
       - "5439:5439"
+    links:
+      - airflow
+      - jumpbox
+
