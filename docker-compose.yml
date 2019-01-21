@@ -2,24 +2,18 @@ version: '3'
 
 services:
   jumpbox:
-    image: postgres
+    image: alpine
     command: tail -F anything
-    # psql -h postgres -U postgres
 
   airflow:
-    # build:
-    #   context: .
-    #   dockerfile: Dockerfile
-    image: puckel/docker-airflow
+    build:
+      context: .
     ports:
-    - "8080:8080"
-    volumes:
-    - .:/opt/airflow-samples
+      - "8080:8080"
     environment:
-      - AIRFLOW_HOME=/opt/airflow-samples/airflow
-    command: bash /opt/airflow-samples/airflow_entrypoint.sh
+      AIRFLOW_HOME: /opt/airflow
 
-  postgres:
+  db:
     image: postgres
     restart: always
     environment:

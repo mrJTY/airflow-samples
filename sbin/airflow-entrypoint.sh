@@ -1,4 +1,4 @@
-echo $AIRFLOW_HOME
+echo "Airflow home set as: $AIRFLOW_HOME"
 cd $AIRFLOW_HOME
 
 airflow initdb
