@@ -1,4 +1,4 @@
-airflow/logs/*
+airflow/log/*
 *.pid
 *.db
 *.cfg

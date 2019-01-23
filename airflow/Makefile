@@ -7,10 +7,10 @@ initdb:
 	airflow initdb
 
 webserver:
-	airflow webserver -p $(PORT)
+	airflow webserver -p $(PORT) &
 
 scheduler:
-	airflow scheduler
+	airflow scheduler &
 
 install-local:
 	conda create -y -n $(CONDAENV) python=3.6 && \
@@ -24,9 +24,3 @@ clean:
 	rm -f *.db \
 	rm -rf log \
 	rm -f *.cfg
-
-docker-compose-up: docker-compose-down
-	docker-compose build && docker-compose up
-
-docker-compose-down:
-	docker-compose stop && docker-compose down
