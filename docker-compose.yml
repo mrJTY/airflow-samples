@@ -3,7 +3,8 @@ version: '3'
 services:
   jumpbox:
     image: alpine
-    command: tail -F anything
+    # Keep this running
+    command: tail -F /dev/null
 
   airflow:
     build:
@@ -17,13 +18,17 @@ services:
     image: postgres
     restart: always
     environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db
       POSTGRES_PASSWORD: password123
     ports:
-      - "5439:5439"
+      - "9090:5432"
     links:
       - airflow
       - jumpbox
+      - simple-microservice
 
   simple-microservice:
       build:
         context: simple-microservice
+      command: tail -f /dev/null
