@@ -1,9 +1,8 @@
-(ns simple-microservice.core)
+(ns simple-microservice.core
+  (:require [io.pedestal.http :as http]))
 
-(defn foo
-  "I don't do a whole lot."
-  [x]
-  (println x "Hello, World!"))
+(defn respond-hello [req]
+  {:status 200, :body 'Hello})
 
 (defn -main [& x]
-  (foo x))
+  (println(respond-hello x)))
