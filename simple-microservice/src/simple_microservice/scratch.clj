@@ -1,9 +1,10 @@
 (ns simple-microservice.scratch
     (:require [simple-microservice.db.characters :as characters]
-              [simple-microservice.db :as db]))
+              [io.pedestal.test :as test]
+              [simple-microservice.db :as db]
+            [io.pedestal.http.route :as route]
+            [io.pedestal.http.body-params :as body-params]
+            [simple-microservice.service  :as service]
+            [ring.util.response :as ring-resp]))
 
-(characters/create-characters-table db/db)
-(characters/insert-character db/db {:name "Westley", :specialty "defense" })
-(characters/insert-character db/db {:name "Snap", :specialty "attack" })
-
-(characters/characters-by-ids-specify-cols db/db  {:ids [1 2] :cols ["name" "specialty"]})
+(test/response-for service/home-page :get)

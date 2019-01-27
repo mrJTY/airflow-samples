@@ -28,6 +28,12 @@ values :tuple*:characters
 
 -- A ":result" value of ":1" specifies a single record
 -- (as a hashmap) will be returned
+-- :name character
+-- :doc Get character
+select * from characters limit 10
+
+-- A ":result" value of ":1" specifies a single record
+-- (as a hashmap) will be returned
 -- :name character-by-id :? :1
 -- :doc Get character by id
 select * from characters

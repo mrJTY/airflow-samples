@@ -1,8 +1,13 @@
 (ns simple-microservice.db)
 
 ;; if local: localhost, if docker use db
-(def db_host_name "db")
-(def db_port 5432)
+(def db_host_name "localhost")
+(def db_port 9090)
+
+; (def db_host_name "db")
+; (def db_port 5432)
+
+
 (def db_name "")
 (def db_user "postgres")
 (def db_password "password123")

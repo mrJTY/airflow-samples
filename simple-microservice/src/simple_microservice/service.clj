@@ -2,6 +2,8 @@
   (:require [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
+            [simple-microservice.db.characters :as characters]
+            [simple-microservice.db :as db]
             [ring.util.response :as ring-resp]))
 
 (defn about-page
@@ -14,13 +16,20 @@
   [request]
   (ring-resp/response "Hello World!"))
 
+(defn list-characters
+  [request]
+  (ring-resp/response (characters/character db/db)))
+
 ;; Defines "/" and "/about" routes with their associated :get handlers.
 ;; The interceptors defined after the verb map (e.g., {:get home-page}
 ;; apply to / and its children (/about).
 (def common-interceptors [(body-params/body-params) http/html-body])
 
+
+
 ;; Tabular routes
-(def routes #{["/" :get (conj common-interceptors `home-page)]
+(def routes #{["/"            :get (conj common-interceptors `home-page)]
+              ["/character"   :get (conj common-interceptors `list-characters)]
               ["/about" :get (conj common-interceptors `about-page)]})
 
 ;; Map-based routes
@@ -68,7 +77,7 @@
               ;;  This can also be your own chain provider/server-fn -- http://pedestal.io/reference/architecture-overview#_chain_provider
               ::http/type :jetty
               ;;::http/host "localhost"
-              ::http/port 8080
+              ::http/port 9191
               ;; Options to pass to the container (Jetty)
               ::http/container-options {:h2c? true
                                         :h2? false
