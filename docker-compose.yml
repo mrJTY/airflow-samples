@@ -1,8 +1,9 @@
 version: '3'
 
 services:
+  # Use this jumpbox to debug applications in the docker defined network
   jumpbox:
-    image: alpine
+    image: postgres:11.1
     # Keep this running
     command: tail -F /dev/null
 
@@ -15,7 +16,7 @@ services:
       AIRFLOW_HOME: /opt/airflow
 
   db:
-    image: postgres
+    image: postgres:11.1
     restart: always
     environment:
       POSTGRES_USER: postgres
@@ -25,7 +26,6 @@ services:
       - "9090:5432"
     links:
       - airflow
-      - jumpbox
       - simple-microservice
 
   simple-microservice:
