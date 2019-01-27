@@ -1,8 +1,8 @@
-FROM clojure:openjdk-8-lein
+FROM java:8-alpine
+MAINTAINER Your Name <you@example.com>
 
-ENV HOME /opt/simple-microservice
-WORKDIR ${HOME}
+ADD target/simple-microservice-0.0.1-SNAPSHOT-standalone.jar /simple-microservice/app.jar
 
-COPY . .
+EXPOSE 8080
 
-CMD ["lein", "run", "main"]
+CMD ["java", "-jar", "/simple-microservice/app.jar"]

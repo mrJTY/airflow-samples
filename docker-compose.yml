@@ -31,4 +31,3 @@ services:
   simple-microservice:
       build:
         context: simple-microservice
-      command: tail -f /dev/null
