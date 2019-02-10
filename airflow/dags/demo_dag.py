@@ -23,23 +23,24 @@ dag = DAG('tutorial', default_args = default_args, schedule_interval = '0 0 * * 
 
 # Create cats table
 # =======================
-create_cats_table_query = """
-create table Cats(
-    CatId   bigint,
-    CatName varchar(32)
+create_pets_table_query = """
+create table Pets(
+    PetId   bigint,
+    PetName varchar(32),
+    WeightKg  float
 );
 """
-create_cats_table_task = PostgresOperator(sql = create_cats_table_query, autocommit = True, postgres_conn_id = POSTGRES_CONN_ID, database = POSTGRES_DB)
+create_pets_table_task = PostgresOperator(task_id = 'create_pets_table', sql = create_pets_table_query, autocommit = True, postgres_conn_id = POSTGRES_CONN_ID, database = POSTGRES_DB)
 
 # Fill in some sample data
 # =======================
 insert_cats_query = """
-insert into Cats values
-(1, "Boots"),
-(2, "Loki"),
-(3, "Lucy")
+insert into Pets values
+(1, "Boots", 7.5),
+(2, "Loki", 4.5),
+(3, "Lucy", 2.1)
 """
-insert_cats_tasks = PostgresOperator(sql = insert_cats_query, autocommit = True, postgres_conn_id = POSTGRES_CONN_ID, database = POSTGRES_DB)
+insert_cats_tasks = PostgresOperator(task_id = 'insert_cats', sql = insert_cats_query, autocommit = True, postgres_conn_id = POSTGRES_CONN_ID, database = POSTGRES_DB)
 
 # TODO: Query the data
 
@@ -50,4 +51,4 @@ insert_cats_tasks = PostgresOperator(sql = insert_cats_query, autocommit = True,
 
 # Tasks chaining
 # ==============
-create_cats_table_task >> insert_cats_tasks
+create_pets_table_task >> insert_cats_tasks

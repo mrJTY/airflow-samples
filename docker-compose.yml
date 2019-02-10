@@ -35,3 +35,6 @@ services:
   simple-microservice:
       build:
         context: simple-microservice
+
+  jupyter-notebook:
+    image: jupyter/base-notebook:83ed2c63671f
