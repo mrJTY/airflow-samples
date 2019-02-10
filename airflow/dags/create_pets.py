@@ -19,7 +19,7 @@ default_args = {
 # Connection string as defined in the Makefile
 POSTGRES_CONN_ID = 'POSTGRES_MASTER'
 POSTGRES_DB = "db"
-dag = DAG('tutorial', default_args = default_args, schedule_interval = '0 0 * * *')
+dag = DAG('create_pets', default_args = default_args, schedule_interval = '0 0 * * *')
 
 # Create cats table
 # =======================
@@ -30,7 +30,7 @@ create table Pets(
     WeightKg  float
 );
 """
-create_pets_table_task = PostgresOperator(task_id = 'create_pets_table', sql = create_pets_table_query, autocommit = True, postgres_conn_id = POSTGRES_CONN_ID, database = POSTGRES_DB)
+create_pets_table_task = PostgresOperator(task_id = 'create_pets_table', sql = create_pets_table_query, dag = dag, autocommit = True, postgres_conn_id = POSTGRES_CONN_ID, database = POSTGRES_DB)
 
 # Fill in some sample data
 # =======================
@@ -40,7 +40,7 @@ insert into Pets values
 (2, "Loki", 4.5),
 (3, "Lucy", 2.1)
 """
-insert_cats_tasks = PostgresOperator(task_id = 'insert_cats', sql = insert_cats_query, autocommit = True, postgres_conn_id = POSTGRES_CONN_ID, database = POSTGRES_DB)
+insert_cats_tasks = PostgresOperator(task_id = 'insert_cats', sql = insert_cats_query, dag = dag, autocommit = True, postgres_conn_id = POSTGRES_CONN_ID, database = POSTGRES_DB)
 
 # TODO: Query the data
 
