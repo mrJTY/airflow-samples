@@ -1,26 +1,31 @@
-CONDAENV=my_airflow_env
-PORT=8080
+WEBSERVER_PORT=8080
 export SLUGIFY_USES_TEXT_UNIDECODE=yes
 export AIRFLOW_HOME=$(shell echo `pwd`)
 
-initdb:
-	airflow initdb
+# Export a connection
+# See: https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
+export AIRFLOW_CONN_POSTGRES_MASTER=postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)
 
 webserver:
-	airflow webserver -p $(PORT) &
+	airflow webserver -p $(WEBSERVER_PORT) &
 
+# Run a daemon scheduler
 scheduler:
-	airflow scheduler &
+	airflow scheduler -D -i $(AIRFLOW_HOME)/scheduler.pid &
 
-install-local:
-	conda create -y -n $(CONDAENV) python=3.6 && \
-	source activate $(CONDAENV) && \
-	pip install apache-airflow
+kill_scheduler:
+	kill -9 `$(AIRFLOW_HOME)/scheduler.pid`
+
+restart_scheduler: kill_scheduler scheduler
+
+install: clean
+	pip install apache-airflow==1.10.2 psycopg2==2.7.5 && \
+	airflow initdb && \
+	sed -i "s/load_examples = True/load_examples = False/" $(AIRFLOW_HOME)/airflow.cfg
 
 uninstall:
-	conda remove --name $(CONDAENV) --all
+	pip uninstall apache-airflow
 
 clean:
 	rm -f *.db \
-	rm -rf log \
 	rm -f *.cfg

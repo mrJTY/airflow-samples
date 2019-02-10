@@ -4,9 +4,10 @@ from airflow.operators.python_operator import PythonOperator
 
 # Let us introduce some bad code...
 # ==================================
-dag = DAG('buggy_dag', description='Sh*t dag',
-          schedule_interval='* * * * *',
-        start_date=datetime(2017, 3, 20), catchup=False)
+dag = DAG('buggy_dag',
+    description='Sh*t dag',
+    schedule_interval='* * * * *',
+    start_date=datetime(2017, 3, 20), catchup=False)
 
 def buggy_code():
     return f"I am a bad peice of code.....{0/0}"
