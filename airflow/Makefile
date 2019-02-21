@@ -15,7 +15,7 @@ export AIRFLOW_CONN_POSTGRES_MASTER=postgres://$(POSTGRES_USER):$(POSTGRES_PASSW
 airflow:
 	. activate $(CONDA_ENV) && \
 	airflow scheduler -D --pid $(AIRFLOW_HOME)/scheduler.pid &
-	airflow webserver -p $(WEBSERVER_PORT) & \
+	airflow webserver -p $(WEBSERVER_PORT)
 
 install: clean
 	conda create -y python=3.6 --name $(CONDA_ENV) && \
