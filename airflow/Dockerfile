@@ -1,4 +1,4 @@
-FROM python:3.6
+FROM continuumio/miniconda:4.5.12
 WORKDIR /opt/airflow
 COPY Makefile /opt/airflow/Makefile
 RUN make install

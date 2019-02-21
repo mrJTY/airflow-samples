@@ -1,4 +1,4 @@
-FROM java:8-alpine
+FROM clojure:openjdk-11-lein
 MAINTAINER Your Name <you@example.com>
 
 ADD target/simple-microservice-0.0.1-SNAPSHOT-standalone.jar /simple-microservice/app.jar

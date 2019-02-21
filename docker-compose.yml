@@ -1,12 +1,6 @@
 version: '3'
 
 services:
-  # Use this jumpbox to debug applications in the docker defined network
-  jumpbox:
-    image: postgres:11.1
-    # Keep this running
-    command: tail -F /dev/null
-
   airflow:
     build:
       context: airflow/
@@ -19,22 +13,19 @@ services:
       POSTGRES_PASSWORD: password123
       POSTGRES_PORT: 9090
 
-  postgres:
-    image: postgres:11.1
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: db
-      POSTGRES_PASSWORD: password123
-    ports:
-      - "9090:5432"
-    links:
-      - airflow
-      - simple-microservice
+  # postgres:
+  #   image: postgres:11.1
+  #   restart: always
+  #   environment:
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_DB: db
+  #     POSTGRES_PASSWORD: password123
+  #   ports:
+  #     - "9090:5432"
+  #   links:
+  #     - airflow
+  #     - simple-microservice
 
-  simple-microservice:
-      build:
-        context: simple-microservice
-
-  jupyter-notebook:
-    image: jupyter/base-notebook:83ed2c63671f
+  # simple-microservice:
+  #     build:
+  #       context: simple-microservice
