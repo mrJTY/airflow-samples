@@ -13,13 +13,10 @@ export AIRFLOW_HOME=$(shell echo `pwd`)
 export AIRFLOW_CONN_POSTGRES_MASTER=postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)
 
 airflow:
-	. activate $(CONDA_ENV) && \
 	airflow scheduler -D --pid $(AIRFLOW_HOME)/scheduler.pid &
 	airflow webserver -p $(WEBSERVER_PORT)
 
 install: clean
-	conda create -y python=3.6 --name $(CONDA_ENV) && \
-	. activate $(CONDA_ENV) && \
 	pip install apache-airflow==1.10.2 psycopg2==2.7.5 && \
 	airflow initdb && \
 	sed -i "s/load_examples = True/load_examples = False/" $(AIRFLOW_HOME)/airflow.cfg && \
@@ -31,7 +28,7 @@ kill-scheduler:
 restart-scheduler: kill_scheduler scheduler
 
 uninstall: clean
-	conda env remove -y --name $(CONDA_ENV)
+	pip uninstall airflow
 
 clean:
 	rm -f *.db \
