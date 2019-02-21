@@ -1,12 +1,6 @@
 version: '3'
 
 services:
-  # Use this jumpbox to debug applications in the docker defined network
-  jumpbox:
-    image: postgres:11.1
-    # Keep this running
-    command: tail -F /dev/null
-
   airflow:
     build:
       context: airflow/
@@ -14,8 +8,12 @@ services:
       - "8080:8080"
     environment:
       AIRFLOW_HOME: /opt/airflow
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_PORT: 9090
 
-  db:
+  postgres:
     image: postgres:11.1
     restart: always
     environment:

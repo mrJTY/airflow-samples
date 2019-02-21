@@ -13,11 +13,11 @@
 (def db_password "password123")
 
 (def db
-    {:classname "org.postgresql.Driver"
-     :subprotocol "postgresql"
-     :subname (str "//" db_host_name ":" db_port"/")
-     :user db_user
-     :password db_password
-     })
+    {
+    :classname "org.postgresql.Driver"
+    :subprotocol "postgresql"
+    :subname (str "//" db_host_name ":" db_port"/")
+    :user db_user
+    :password db_password})
 
 
