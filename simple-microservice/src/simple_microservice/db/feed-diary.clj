@@ -1,4 +1,4 @@
-(ns simple-microservice.db.characters
+(ns simple-microservice.db.feed-diary
     (:require [hugsql.core :as hugsql]))
 
 ;; The path is relative to the classpath (not proj dir!),

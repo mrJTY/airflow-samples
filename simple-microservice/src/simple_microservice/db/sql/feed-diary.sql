@@ -1,5 +1,5 @@
 
--- :name create-characters-table
+-- :name create-feed-diary-table
 -- :command :execute
 -- :result :raw
 -- :doc Create characters table
@@ -13,7 +13,7 @@ create table feed_diary (
 /* ...snip... */
 
 -- A :result value of :n below will return affected rows:
--- :name insert-character :! :n
+-- :name insert-feed :! :n
 -- :doc Insert a single character returning affected row count
 insert into feed_diary (name)
 values (:name)

@@ -42,8 +42,6 @@ open_pet_food_operator = PythonOperator(python_callable = open_pet_food, task_id
 # log_to_feeding_diary_operator = HTTPOperator()
 
 # Analyse FeedDiary postgres
-# Suggested Improvement: use templating tool
-# to validate inputs
 # ===========================================
 analyse_query = f"""
 select
@@ -52,8 +50,6 @@ select
     , max(datetimestamp) as last_feed
 from
     feed_diary
-where
-    datetimestamp > '{datetime.utcnow().strftime('yyyy-mm-dd')}'
 group by
     name
 """

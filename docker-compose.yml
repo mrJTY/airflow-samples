@@ -13,19 +13,19 @@ services:
       POSTGRES_PASSWORD: password123
       POSTGRES_PORT: 9090
 
-  # postgres:
-  #   image: postgres:11.1
-  #   restart: always
-  #   environment:
-  #     POSTGRES_USER: postgres
-  #     POSTGRES_DB: db
-  #     POSTGRES_PASSWORD: password123
-  #   ports:
-  #     - "9090:5432"
-  #   links:
-  #     - airflow
-  #     - simple-microservice
+  postgres:
+    image: postgres:11.1
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db
+      POSTGRES_PASSWORD: password123
+    ports:
+      - "9090:5432"
+    links:
+      - airflow
+      - simple-microservice
 
-  # simple-microservice:
-  #     build:
-  #       context: simple-microservice
+  simple-microservice:
+      build:
+        context: simple-microservice
