@@ -5,4 +5,4 @@ RUN apt-get update
 RUN apt-get install -y make gcc
 RUN make install
 COPY dags /opt/airflow/dags
-CMD ["make", "airflow-in-container"]
+CMD ["make", "airflow"]
