@@ -12,32 +12,39 @@ export AIRFLOW_HOME=$(shell echo `pwd`)
 # See: https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
 export AIRFLOW_CONN_POSTGRES_MASTER=postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)
 
-airflow: webserver scheduler
-	echo "Webserver and scheduler started!"
-
-webserver:
-	source activate $(CONDA_ENV) && \
-	airflow webserver -p $(WEBSERVER_PORT) &
-
-# Run a daemon scheduler and save pid to a file
-scheduler:
-	source activate $(CONDA_ENV) && \
+airflow-container:
+	conda activate $(CONDA_ENV) && \
+	airflow webserver -p $(WEBSERVER_PORT) & \
 	airflow scheduler -D --pid $(AIRFLOW_HOME)/scheduler.pid &
 
-kill_scheduler:
-	kill -9 `$(AIRFLOW_HOME)/scheduler.pid`
+airflow-local:
+	source activate $(CONDA_ENV) && \
+	airflow webserver -p $(WEBSERVER_PORT) & \
+	airflow scheduler -D --pid $(AIRFLOW_HOME)/scheduler.pid &
 
-restart_scheduler: kill_scheduler scheduler
-
-install: clean
+install-container: clean
 	conda create -y python=3.6 --name $(CONDA_ENV) && \
+	conda activate $(CONDA_ENV) && \
 	pip install apache-airflow==1.10.2 psycopg2==2.7.5 && \
 	airflow initdb && \
 	sed -i "s/load_examples = True/load_examples = False/" $(AIRFLOW_HOME)/airflow.cfg && \
 	airflow resetdb -y
 
-uninstall:
-	conda remove $(CONDA_ENV)
+install-local: clean
+	conda create -y python=3.6 --name $(CONDA_ENV) && \
+	source activate $(CONDA_ENV) && \
+	pip install apache-airflow==1.10.2 psycopg2==2.7.5 && \
+	airflow initdb && \
+	sed -i "s/load_examples = True/load_examples = False/" $(AIRFLOW_HOME)/airflow.cfg && \
+	airflow resetdb -y
+
+kill-scheduler:
+	kill -9 `$(AIRFLOW_HOME)/scheduler.pid`
+
+restart-scheduler: kill_scheduler scheduler
+
+uninstall: clean
+	conda env remove -y --name $(CONDA_ENV)
 
 clean:
 	rm -f *.db \

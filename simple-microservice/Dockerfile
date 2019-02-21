@@ -1,8 +1,4 @@
 FROM clojure:openjdk-11-lein
-MAINTAINER Your Name <you@example.com>
-
 ADD target/simple-microservice-0.0.1-SNAPSHOT-standalone.jar /simple-microservice/app.jar
-
-EXPOSE 8080
-
+RUN lein uberjar
 CMD ["java", "-jar", "/simple-microservice/app.jar"]
