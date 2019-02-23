@@ -2,7 +2,7 @@
   (:require [io.pedestal.http :as http]
             [io.pedestal.http.route :as route]
             [io.pedestal.http.body-params :as body-params]
-            [simple-microservice.db.characters :as characters]
+            [simple-microservice.db.feed-log :as feed-log]
             [simple-microservice.db :as db]
             [ring.util.response :as ring-resp]))
 
@@ -16,9 +16,10 @@
   [request]
   (ring-resp/response "Hello World!"))
 
-(defn list-characters
+(defn list-feed-logs
   [request]
-  (ring-resp/response (characters/character db/db)))
+  (ring-resp/response {:hello 'world}))
+  ;;(ring-resp/response (characters/character db/db)))
 
 ;; Defines "/" and "/about" routes with their associated :get handlers.
 ;; The interceptors defined after the verb map (e.g., {:get home-page}
@@ -29,7 +30,7 @@
 
 ;; Tabular routes
 (def routes #{["/"            :get (conj common-interceptors `home-page)]
-              ["/character"   :get (conj common-interceptors `list-characters)]
+              ["/feed"   :get (conj common-interceptors `list-feed-log)]
               ["/about" :get (conj common-interceptors `about-page)]})
 
 ;; Map-based routes

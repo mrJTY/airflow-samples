@@ -1,4 +1,4 @@
-(ns simple-microservice.prepopulate
+(ns simple-microservice.prepopulate-database
     (:require [simple-microservice.db.feed-log :as feed-log]
               [simple-microservice.db :as db]))
 

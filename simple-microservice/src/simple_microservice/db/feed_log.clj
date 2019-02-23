@@ -6,6 +6,6 @@
 ;; The same would apply if the sql was under "resources/..."
 ;; Also, notice the under_scored path compliant with
 ;; Clojure file paths for hyphenated namespaces
-(def feed-log-queries  "simple_microservice/db/sql/feed-log.sql")
+(def feed-log-queries  "simple_microservice/db/sql/feed_log.sql")
 (hugsql/def-db-fns feed-log-queries)
 ;;(hugsql/def-sqlvec-fns feed-diary-queries)
