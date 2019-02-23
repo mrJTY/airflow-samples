@@ -25,7 +25,16 @@ services:
     links:
       - airflow
       - simple-microservice
+  
+  psqlclient:
+    image: postgres:11.1
+    environment:
+      PGUSER: postgres
+      PGHOST: postgres
+      PGPASSWORD: password123
 
   simple-microservice:
       build:
         context: simple-microservice
+      ports:
+        - "9191:9191"

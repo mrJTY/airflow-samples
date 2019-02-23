@@ -18,7 +18,7 @@
 
 (defn list-feed-logs
   [request]
-  (ring-resp/response {:hello 'world}))
+  (ring-resp/response "Hello world!"))
   ;;(ring-resp/response (characters/character db/db)))
 
 ;; Defines "/" and "/about" routes with their associated :get handlers.
@@ -30,8 +30,8 @@
 
 ;; Tabular routes
 (def routes #{["/"            :get (conj common-interceptors `home-page)]
-              ["/feed"   :get (conj common-interceptors `list-feed-log)]
-              ["/about" :get (conj common-interceptors `about-page)]})
+              ;; ["/feed"        :get (conj common-interceptors `list-feed-log)]
+              ["/about"       :get (conj common-interceptors `about-page)]})
 
 ;; Map-based routes
 ;(def routes `{"/" {:interceptors [(body-params/body-params) http/html-body]
