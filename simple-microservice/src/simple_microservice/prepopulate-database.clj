@@ -1,7 +1,6 @@
 (ns simple-microservice.prepopulate
-    (:require [simple-microservice.db.feed-diary :as feed-diary]
+    (:require [simple-microservice.db.feed-log :as feed-log]
               [simple-microservice.db :as db]))
 
-(defn prepopulate []
-    (feed-diary/create-feed-diary-table db/db)
-    (feed-diary/insert-feed db/db))
+(defn prepopulate-database []
+    (feed-log/create-feed-log-table db/db))

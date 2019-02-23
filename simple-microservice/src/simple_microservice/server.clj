@@ -2,7 +2,7 @@
   (:gen-class) ; for -main method in uberjar
   (:require [io.pedestal.http :as server]
             [io.pedestal.http.route :as route]
-            [simple-microservice.prepopulate :as prepopulate]
+            [simple-microservice.prepopulate-database :as prepopulate]
             [simple-microservice.service :as service]))
 
 ;; This is an adapted service map, that can be started and stopped
@@ -34,7 +34,7 @@
   "The entry-point for 'lein run'"
   [& args]
   (println "\nCreating your server...")
-  (prepopulate/prepopulate)
+  (prepopulate/prepopulate-database)
   (server/start runnable-service))
 
 ;; If you package the service up as a WAR,
