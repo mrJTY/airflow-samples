@@ -17,18 +17,23 @@
   [request]
   (ring-resp/response "Hello World!"))
 
+;; Get the most recent feed logs
 (defn list-feed-logs
   [request]
   (ring-resp/response (feed-log/list-feed-logs db/db)))
 
+;; Get the most recent feed logs for a pet
 (defn list-feed-logs-for-a-pet
   [request]
   (let [nm (get-in request [:path-params :name])]
     (ring-resp/response (feed-log/list-feed-logs-for-a-pet db/db {:name nm}))))
 
+;; Post a new feed log for a pet
 (defn post-feed-log
   [request]
-  (ring-resp/response (feed-log/insert-feed-log db/db {:name "foo"})))
+  (let [nm (get-in request [:query-params :name])]
+     (feed-log/insert-feed-log db/db {:name nm})
+     (ring-resp/response (str "insert " nm))))
 
 ;; Defines "/" and "/about" routes with their associated :get handlers.
 ;; The interceptors defined after the verb map (e.g., {:get home-page}
