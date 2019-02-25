@@ -4,6 +4,7 @@
             [io.pedestal.http.body-params :as body-params]
             [simple-microservice.db.feed-log :as feed-log]
             [simple-microservice.db :as db]
+            [ring.middleware.json :as ring-json]
             [ring.util.response :as ring-resp]))
 
 (defn about-page

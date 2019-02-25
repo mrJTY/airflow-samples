@@ -20,7 +20,7 @@ limit 10
 
 -- A ":result" value of ":*" specifies a vector of records
 -- (as hashmaps) will be returned
--- :name list-feed-log-for-a-pet :? :*
+-- :name list-feed-logs-for-a-pet :? :*
 -- :doc Get all feed log
 select * from feed_log
 where name = :name

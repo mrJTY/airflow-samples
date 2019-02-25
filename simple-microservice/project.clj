@@ -7,6 +7,7 @@
                  [io.pedestal/pedestal.service "0.5.5"]
                  [com.layerware/hugsql "0.4.9"]
                  [org.postgresql/postgresql "42.2.2"]
+                 [ring/ring-json "0.4.0"]
 
                  ;; Remove this line and uncomment one of the next lines to
                  ;; use Immutant or Tomcat instead of Jetty:
