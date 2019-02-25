@@ -18,8 +18,16 @@
 
 (defn list-feed-logs
   [request]
-  (ring-resp/response "Hello world!"))
-  ;;(ring-resp/response (characters/character db/db)))
+  (ring-resp/response (feed-log/list-feed-logs db/db)))
+
+(defn list-feed-logs-for-a-pet
+  [request]
+  (let [nm (get-in request [:path-params :name])]
+    (ring-resp/response (feed-log/list-feed-logs-for-a-pet db/db {:name nm}))))
+
+(defn post-feed-log
+  [request]
+  (ring-resp/response (feed-log/insert-feed-log db/db {:name "foo"})))
 
 ;; Defines "/" and "/about" routes with their associated :get handlers.
 ;; The interceptors defined after the verb map (e.g., {:get home-page}
@@ -29,9 +37,11 @@
 
 
 ;; Tabular routes
-(def routes #{["/"            :get (conj common-interceptors `home-page)]
-              ;; ["/feed"        :get (conj common-interceptors `list-feed-log)]
-              ["/about"       :get (conj common-interceptors `about-page)]})
+(def routes #{["/"               :get  (conj common-interceptors `home-page)]
+              ["/feedlog"        :get  (conj common-interceptors `list-feed-logs)]
+              ["/feedlog/:name"  :get  (conj common-interceptors `list-feed-logs-for-a-pet)]
+              ["/feedlog"        :post (conj `post-feed-log)]
+              ["/about"          :get  (conj common-interceptors `about-page)]})
 
 ;; Map-based routes
 ;(def routes `{"/" {:interceptors [(body-params/body-params) http/html-body]
