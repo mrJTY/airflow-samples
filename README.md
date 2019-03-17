@@ -18,6 +18,7 @@ In a terminal run:
 sudo dockerd
 
 # Start up stack, use the build flag if needed
+# Suggest to rebuild each time there is a change in the dags folder
 sudo docker-compose up --build
 ```
 
