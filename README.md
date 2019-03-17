@@ -28,7 +28,17 @@ Visit http://localhost:8080 to view the admin panel that will orchestrate the wo
 
 # Microservice API
 
+These are the routes
+
+## Get top 10 feed logs for all pets
+
 ```
-PUT 
+curl -v localhost:9191/feedlog
+```
+
+## Post a feed log for a pet
+
+```
+curl -v --data "name=doge" localhost:9191/feedlog
 ```
 

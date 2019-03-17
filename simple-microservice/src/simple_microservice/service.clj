@@ -25,15 +25,15 @@
 ;; Get the most recent feed logs for a pet
 (defn list-feed-logs-for-a-pet
   [request]
-  (let [nm (get-in request [:path-params :name])]
-    (ring-resp/response (feed-log/list-feed-logs-for-a-pet db/db {:name nm}))))
+  (let [pet-name (get-in request [:path-params :name])]
+    (ring-resp/response (feed-log/list-feed-logs-for-a-pet db/db {:name pet-name}))))
 
 ;; Post a new feed log for a pet
 (defn post-feed-log
   [request]
-  (let [nm (get-in request [:query-params :name])]
-     (feed-log/insert-feed-log db/db {:name nm})
-     (ring-resp/response (str "insert " nm))))
+  (let [pet-name (get-in request [:query-params :name])]
+     (feed-log/insert-feed-log db/db {:name pet-name})
+     (ring-resp/response (str "insert " pet-name))))
 
 ;; Defines "/" and "/about" routes with their associated :get handlers.
 ;; The interceptors defined after the verb map (e.g., {:get home-page}
@@ -46,7 +46,7 @@
 (def routes #{["/"               :get  (conj common-interceptors `home-page)]
               ["/feedlog"        :get  (conj common-interceptors `list-feed-logs)]
               ["/feedlog/:name"  :get  (conj common-interceptors `list-feed-logs-for-a-pet)]
-              ["/feedlog"        :post (conj `post-feed-log)]
+              ["/feedlog/:name"  :post (conj common-interceptors `post-feed-log)]
               ["/about"          :get  (conj common-interceptors `about-page)]})
 
 ;; Map-based routes
