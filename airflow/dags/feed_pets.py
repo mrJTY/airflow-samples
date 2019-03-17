@@ -65,9 +65,13 @@ def open_food():
 
 open_food_operator = PythonOperator(python_callable = open_food, task_id = 'open_food', dag = dag)
 
+
+
+# https://airflow.apache.org/_modules/airflow/operators/http_operator.html
+
 # Log the feeding diary for analysis via microservice
 # =================================================
-# log_to_feeding_diary_operator = HTTPOperator()
+# log_to_feeding_diary_operator = HTTPOperator(method = "POST")
 
 # Analyse FeedDiary postgres
 # ===========================================

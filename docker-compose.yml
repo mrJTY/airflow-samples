@@ -1,6 +1,16 @@
 version: '3'
 
 services:
+  postgres:
+    image: postgres:11.1
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db
+      POSTGRES_PASSWORD: password123
+    ports:
+      - "5432:5432"
+
   airflow:
     build:
       context: airflow/
@@ -13,29 +23,30 @@ services:
       POSTGRES_PASSWORD: password123
       POSTGRES_PORT: 5432
       POSTGRES_DB: db
-
-  postgres:
-    image: postgres:11.1
-    restart: always
-    environment:
-      POSTGRES_USER: postgres
-      POSTGRES_DB: db
-      POSTGRES_PASSWORD: password123
-    ports:
-      - "5432:5432"
     links:
-      - airflow
-      - simple-microservice
-  
+      - postgres
+    depends_on:
+      - postgres
+
+  simple-microservice:
+      build:
+        context: simple-microservice
+      # Expose internal 9090 for microservice
+      expose:
+        - 9090
+      # Bind local machine 9191 to container 9090 9191:9090
+      ports:
+        - "9090:9090"
+      links:
+        - postgres
+        - airflow
+      depends_on:
+        - postgres
+
+  # For querying the database manually
   psqlclient:
     image: postgres:11.1
     environment:
       PGUSER: postgres
       PGHOST: postgres
       PGPASSWORD: password123
-
-  simple-microservice:
-      build:
-        context: simple-microservice
-      ports:
-        - "9090:9191"

@@ -31,6 +31,4 @@ now_operator = PythonOperator(python_callable = print_now, task_id = 'print_now'
 
 # Task list
 # =========
-hello_operator >> sleep_operator
-sleep_operator >> world_operator
-world_operator >> now_operator
+hello_operator >> sleep_operator >> world_operator >> now_operator

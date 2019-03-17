@@ -13,6 +13,7 @@
   "The entry-point for 'lein run-dev'"
   [& args]
   (println "\nCreating your [DEV] server...")
+  (prepopulate/prepopulate-database)
   (-> service/service ;; start with production configuration
       (merge {:env :dev
               ;; do not block thread that starts web server
