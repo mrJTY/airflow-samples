@@ -30,15 +30,21 @@ Visit http://localhost:8080 to view the admin panel that will orchestrate the wo
 
 These are the routes
 
-## Get top 10 feed logs for all pets
+## Get top 10 most recent feed logs for all pets
 
 ```
-curl -v localhost:9191/feedlog
+curl -v "http://localhost:9090/feedlog"
 ```
 
 ## Post a feed log for a pet
 
 ```
-curl -v --data "name=doge" localhost:9191/feedlog
+curl -v -X POST "http://localhost:9090/feedlog?name=doge"
+```
+
+## Get top 10 most recent logs for Doge
+
+```
+curl -v "http://localhost:9090/feedlog/doge"
 ```
 

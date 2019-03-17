@@ -15,7 +15,7 @@ create table if not exists feed_log (
 -- :name list-feed-logs :? :*
 -- :doc Get all feed log for all pets limit 10
 select * from feed_log
-order by id
+order by datetimestamp desc
 limit 10
 
 -- A ":result" value of ":*" specifies a vector of records

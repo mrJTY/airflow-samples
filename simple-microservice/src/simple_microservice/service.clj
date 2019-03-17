@@ -7,6 +7,8 @@
             [ring.middleware.json :as ring-json]
             [ring.util.response :as ring-resp]))
 
+(def port 9090)
+
 (defn about-page
   [request]
   (ring-resp/response (format "Clojure %s - served from %s"
@@ -46,7 +48,7 @@
 (def routes #{["/"               :get  (conj common-interceptors `home-page)]
               ["/feedlog"        :get  (conj common-interceptors `list-feed-logs)]
               ["/feedlog/:name"  :get  (conj common-interceptors `list-feed-logs-for-a-pet)]
-              ["/feedlog/:name"  :post (conj common-interceptors `post-feed-log)]
+              ["/feedlog"        :post (conj common-interceptors `post-feed-log)]
               ["/about"          :get  (conj common-interceptors `about-page)]})
 
 ;; Map-based routes
@@ -94,7 +96,7 @@
               ;;  This can also be your own chain provider/server-fn -- http://pedestal.io/reference/architecture-overview#_chain_provider
               ::http/type :jetty
               ;;::http/host "localhost"
-              ::http/port 9191
+              ::http/port port
               ;; Options to pass to the container (Jetty)
               ::http/container-options {:h2c? true
                                         :h2? false
