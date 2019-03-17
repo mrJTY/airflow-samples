@@ -1,17 +1,30 @@
-# Call a microservice to feed pets. Scheduled 3 times a day
 import time
 from datetime import datetime
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 import random
 import logging
+import os
 from airflow.operators.postgres_operator import PostgresOperator
+
+# In this case, we are simply defining a connection ID based on an environment variable
+# https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
+POSTGRES_USER = os.getenv('POSTGRES_USER')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
+POSTGRES_HOST = os.getenv('POSTGRES_HOST')
+POSTGRES_DB = os.getenv('POSTGRES_DB')
+POSTGRES_CONN_ID = f"postgres://${POSTGRES_USER}:${POSTGRES_PASSWORD}@${POSTGRES_HOST}:${POSTGRES_PORT}/${POSTGRES_DB}"
 
 # Setup a DAG
 # =============
-dag = DAG('feed_pets_dag', description='Simple tutorial DAG',
-        schedule_interval='0 0 * * *',
-        start_date=datetime.utcnow(), catchup=False)
+dag = DAG('feed_pets_dag',
+        description = 'Simple tutorial DAG',
+        # Feed them every 6th hour from 7am - 7pm. Ie: 07:00, 13:00, 19:00
+        schedule_interval = '0 7-19/6 * * *',
+        # If any task fails, retry 3 times
+        retries = 3,
+        start_date = datetime.utcnow(),
+        catchup = False)
 
 
 # Fetch food

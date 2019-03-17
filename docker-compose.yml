@@ -12,6 +12,7 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: password123
       POSTGRES_PORT: 5432
+      POSTGRES_DB: db
 
   postgres:
     image: postgres:11.1
