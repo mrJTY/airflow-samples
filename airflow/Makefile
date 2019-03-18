@@ -1,26 +1,35 @@
-CONDAENV=my_airflow_env
-PORT=8080
+# This Makefile is used to install Airflow on your local machine or inside a docker container.
+# Usage:
+#	`make install` to install the environment using conda. Assumes you have Anaconda on your system
+# ` `make airflow` to start a webserver and a scheduler on the background
+SHELL := /bin/bash
+export WEBSERVER_PORT=8080
+export CONDA_ENV=airflow_samples_env
 export SLUGIFY_USES_TEXT_UNIDECODE=yes
 export AIRFLOW_HOME=$(shell echo `pwd`)
 
-initdb:
-	airflow initdb
+# Export a connection string for Airflow to read from.
+# See: https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
+export AIRFLOW_CONN_POSTGRES_MASTER=postgres://$(POSTGRES_USER):$(POSTGRES_PASSWORD)@(POSTGRES_HOST):$(POSTGRES_PORT)/$(POSTGRES_DB)
 
-webserver:
-	airflow webserver -p $(PORT) &
+airflow:
+	airflow scheduler -D --pid $(AIRFLOW_HOME)/scheduler.pid &
+	airflow webserver -p $(WEBSERVER_PORT)
 
-scheduler:
-	airflow scheduler &
+install: clean
+	pip install apache-airflow==1.10.2 psycopg2==2.7.5 && \
+	airflow initdb && \
+	sed -i "s/load_examples = True/load_examples = False/" $(AIRFLOW_HOME)/airflow.cfg && \
+	airflow resetdb -y
 
-install-local:
-	conda create -y -n $(CONDAENV) python=3.6 && \
-	source activate $(CONDAENV) && \
-	pip install apache-airflow
+kill-scheduler:
+	kill -9 `$(AIRFLOW_HOME)/scheduler.pid`
 
-uninstall:
-	conda remove --name $(CONDAENV) --all
+restart-scheduler: kill_scheduler scheduler
+
+uninstall: clean
+	pip uninstall airflow
 
 clean:
 	rm -f *.db \
-	rm -rf log \
 	rm -f *.cfg

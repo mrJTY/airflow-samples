@@ -1,33 +1,39 @@
 version: '3'
 
 services:
-  jumpbox:
-    image: alpine
-    # Keep this running
-    command: tail -F /dev/null
-
-  airflow:
-    build:
-      context: airflow/
-    ports:
-      - "8080:8080"
-    environment:
-      AIRFLOW_HOME: /opt/airflow
-
-  db:
-    image: postgres
+  postgres:
+    image: postgres:11.1
     restart: always
     environment:
       POSTGRES_USER: postgres
       POSTGRES_DB: db
       POSTGRES_PASSWORD: password123
-    ports:
-      - "9090:5432"
-    links:
-      - airflow
-      - jumpbox
-      - simple-microservice
+    expose:
+      - 5432
 
-  simple-microservice:
-      build:
-        context: simple-microservice
+  microservice:
+    build:
+      context: simple-microservice
+    depends_on:
+      - postgres
+    restart: always
+    expose:
+      - 9090
+
+  airflow:
+    build:
+      context: airflow/
+    restart: always
+    ports:
+      - 8080:8080
+    environment:
+      AIRFLOW_HOME: /opt/airflow
+      POSTGRES_HOST: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: password123
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: db
+    links:
+      - postgres
+      - microservice
+

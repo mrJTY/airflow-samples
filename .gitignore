@@ -1,5 +1,5 @@
-airflow/log/*
+airflow/logs/*
 *.pid
 *.db
 *.cfg
-log/*
+logs/*
