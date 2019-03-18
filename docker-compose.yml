@@ -8,24 +8,24 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: db
       POSTGRES_PASSWORD: password123
-    ports:
-      - "5432:5432"
+    expose:
+      - 5432
 
   microservice:
     build:
-      context: simple-microservice
-    ports:
-      - "9090:9090"
-    links:
-      - postgres
+      context: tmp
     depends_on:
       - postgres
+    restart: always
+    expose:
+      - 9090
 
   airflow:
     build:
       context: airflow/
+    restart: always
     ports:
-      - "8080:8080"
+      - 8080:8080
     environment:
       AIRFLOW_HOME: /opt/airflow
       POSTGRES_HOST: postgres
@@ -34,9 +34,6 @@ services:
       POSTGRES_PORT: 5432
       POSTGRES_DB: db
     links:
-      - postgres
-      - microservice
-    depends_on:
       - postgres
       - microservice
 

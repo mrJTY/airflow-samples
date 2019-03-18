@@ -37,8 +37,8 @@
      (feed-log/insert-feed-log db/db {:name pet-name})
      (ring-resp/response (str "insert " pet-name))))
 
-(def common-interceptors [(body-params/body-params) http/html-body])
-
+;;(def common-interceptors [(body-params/body-params) http/html-body])
+(def common-interceptors [])
 ;; Tabular routes
 (def routes #{["/"               :get  (conj common-interceptors `home-page)]
               ["/feedlog"        :get  (conj common-interceptors `list-feed-logs)]
@@ -51,6 +51,3 @@
    ::http/type   :jetty
    ::http/port   port})
 
-;;               ::server/
-;;               ;; Content Security Policy (CSP) is mostly turned off in dev mode
-;;               ::server/secure-headers {:content-security-policy-settings {:object-src "'none'"}}})
