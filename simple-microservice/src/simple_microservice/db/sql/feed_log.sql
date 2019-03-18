@@ -2,8 +2,7 @@
 -- :name create-feed-log-table
 -- :command :execute
 -- :result :raw
--- :doc Create characters table
---  H2 Database specific (adjust to your DB)
+-- :doc Feed log table
 create table if not exists feed_log (
   id         serial primary key,
   name       varchar(40),
