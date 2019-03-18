@@ -35,8 +35,9 @@ services:
     # Environment variables
     environment:
       AIRFLOW_HOME: /opt/airflow
-      POSTGRES_CONN_ID: postgres://postgres:password123@postgres:5432/db
-      HTTP_CONN_ID: http://microservice:9090
+      # See how to manage connections: https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
+      AIRFLOW_CONN_POSTGRES_MASTER: postgres://postgres:password123@postgres:5432/db
+      AIRFLOW_CONN_HTTP_MASTER: http://microservice:9090
     links:
       - postgres
       - microservice

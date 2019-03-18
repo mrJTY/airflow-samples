@@ -27,8 +27,8 @@ default_args = {
 
 # In this case, we are simply defining a connection ID based on environment variables passed from Docker Compose
 # https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
-HTTP_CONN_ID = "HTTP_CONN_ID"
-POSTGRES_CONN_ID = "POSTGRES_CONN_ID"
+HTTP_CONN_ID = "HTTP_MASTER"
+POSTGRES_CONN_ID = "POSTGRES_MASTER"
 POSTGRES_DB = "db"
 
 # Setup a DAG
@@ -78,7 +78,6 @@ post_feed_log = SimpleHttpOperator(
     endpoint='feedlog',
     data = f"name={pet_name}",
     headers = {"Content-Type": "application/x-www-form-urlencoded"},
-    response_check=lambda response: True if len(response.json()) == 0 else False,
     dag=dag)
 
 # Analyse FeedDiary postgres
