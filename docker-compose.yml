@@ -31,10 +31,6 @@ services:
   simple-microservice:
       build:
         context: simple-microservice
-      # Expose internal 9090 for microservice
-      expose:
-        - 9090
-      # Bind local machine 9191 to container 9090 9191:9090
       ports:
         - "9090:9090"
       links:
@@ -42,11 +38,3 @@ services:
         - airflow
       depends_on:
         - postgres
-
-  # For querying the database manually
-  psqlclient:
-    image: postgres:11.1
-    environment:
-      PGUSER: postgres
-      PGHOST: postgres
-      PGPASSWORD: password123

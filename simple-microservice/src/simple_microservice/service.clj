@@ -48,14 +48,20 @@
 
 ;; Consumed by simple-microservice.server/create-server
 ;; See http/default-interceptors for additional options you can configure
-(def service {:env :dev
-              ::http/routes routes
-              ::http/port port
-              ::http/resource-path "/public"
-              ::http/type :jetty
-              ::http/join? false
-              ;; all origins are allowed in dev mode
-              ::http/allowed-origins {:creds true :allowed-origins (constantly true)}
-              ;; Content Security Policy (CSP) is mostly turned off in dev mode
-              ::http/secure-headers {:content-security-policy-settings {:object-src "'none'"}}})
+;; (def service {:env :prod
+;;               ::http/routes routes
+;;               ::http/port port
+;;               ::http/type :jetty
+;;               })
+(def service
+  {::http/routes routes
+   ::http/type   :jetty
+   ::http/port   port})
 
+
+;;::http/join? false
+;;::http/resource-path "/public"
+;; all origins are allowed in dev mode
+;;::http/allowed-origins {:creds true :allowed-origins (constantly true)}
+;; Content Security Policy (CSP) is mostly turned off in dev mode
+;;::http/secure-headers {:content-security-policy-settings {:object-src "'none'"}}
