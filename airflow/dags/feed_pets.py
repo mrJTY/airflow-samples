@@ -6,6 +6,7 @@ import random
 import logging
 import os
 from airflow.operators.postgres_operator import PostgresOperator
+from airflow.operators import SimpleHttpOperator
 
 # Default dag settings
 default_args = {
@@ -17,7 +18,7 @@ default_args = {
     'email_on_failure': False,
     'email_on_retry': False,
     'retries': 3,
-    'retry_delay': timedelta(minutes=1),
+    'retry_delay': timedelta(seconds = 2),
     # 'queue': 'bash_queue',
     # 'pool': 'backfill',
     # 'priority_weight': 10,
@@ -26,12 +27,9 @@ default_args = {
 
 # In this case, we are simply defining a connection ID based on environment variables passed from Docker Compose
 # https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
-POSTGRES_USER = os.getenv('POSTGRES_USER')
-POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD')
-POSTGRES_PORT = os.getenv('POSTGRES_PORT')
-POSTGRES_HOST = os.getenv('POSTGRES_HOST')
-POSTGRES_DB = os.getenv('POSTGRES_DB')
-POSTGRES_CONN_ID = f"postgres://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
+HTTP_CONN_ID = "HTTP_CONN_ID"
+POSTGRES_CONN_ID = "POSTGRES_CONN_ID"
+POSTGRES_DB = "db"
 
 # Setup a DAG
 # =============
@@ -68,10 +66,20 @@ open_food_operator = PythonOperator(python_callable = open_food, task_id = 'open
 
 
 # https://airflow.apache.org/_modules/airflow/operators/http_operator.html
+# https://github.com/trbs/airflow-examples/blob/master/dags/example_http_operator.py
+
 
 # Log the feeding diary for analysis via microservice
 # =================================================
-# log_to_feeding_diary_operator = HTTPOperator(method = "POST")
+pet_name = "Doge"
+post_feed_log = SimpleHttpOperator(
+    task_id='post_op',
+    http_conn_id = HTTP_CONN_ID,
+    endpoint='feedlog',
+    data = f"name={pet_name}",
+    headers = {"Content-Type": "application/x-www-form-urlencoded"},
+    response_check=lambda response: True if len(response.json()) == 0 else False,
+    dag=dag)
 
 # Analyse FeedDiary postgres
 # ===========================================
@@ -85,9 +93,14 @@ from
 group by
     name
 """
-analyse_operator = PostgresOperator(task_id = 'analyse_diary', sql = analyse_query, dag = dag, autocommit = True, postgres_conn_id = POSTGRES_CONN_ID, database = POSTGRES_DB)
+analyse_operator = PostgresOperator(task_id = 'analyse_feeds',
+                                    sql = analyse_query,
+                                    dag = dag,
+                                    autocommit = True,
+                                    postgres_conn_id = POSTGRES_CONN_ID,
+                                    database = POSTGRES_DB)
 
 
 # Define dependencies
 # ===================
-fetch_food_operator >> open_food_operator >> analyse_operator
+fetch_food_operator >> open_food_operator >> post_feed_log >>analyse_operator
