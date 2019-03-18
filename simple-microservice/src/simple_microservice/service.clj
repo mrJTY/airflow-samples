@@ -48,6 +48,7 @@
 
 (def service
   {::http/routes routes
+   ::http/host "0.0.0.0"
    ::http/type   :jetty
    ::http/port   port})
 

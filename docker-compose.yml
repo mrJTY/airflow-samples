@@ -13,7 +13,7 @@ services:
 
   microservice:
     build:
-      context: tmp
+      context: simple-microservice
     depends_on:
       - postgres
     restart: always
