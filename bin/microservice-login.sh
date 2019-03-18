@@ -1,1 +1,1 @@
-docker exec -ti airflow-samples_simple-microservice_1 bash
+docker exec -ti airflow-samples_microservice_1 bash
