@@ -22,13 +22,13 @@
 ;; Get the most recent feed logs
 (defn list-feed-logs
   [request]
-  (ring-resp/response (feed-log/list-feed-logs db/db)))
+  (http/json-response (feed-log/list-feed-logs db/db)))
 
 ;; Get the most recent feed logs for a pet
 (defn list-feed-logs-for-a-pet
   [request]
   (let [pet-name (get-in request [:path-params :name])]
-    (ring-resp/response (feed-log/list-feed-logs-for-a-pet db/db {:name pet-name}))))
+    (http/json-response (feed-log/list-feed-logs-for-a-pet db/db {:name pet-name}))))
 
 ;; Post a new feed log for a pet
 (defn post-feed-log
@@ -36,16 +36,17 @@
   (let [pet-name (get-in request [:query-params :name])
         date-fed (get-in request [:query-params :datetimestamp])]
      (feed-log/insert-feed-log db/db {:name pet-name :datetimestamp date-fed})
-     (ring-resp/response (str "insert " pet-name " datetimestamp " date-fed))))
+     (http/json-response {:name pet-name :datetimestamp date-fed})))
 
 (def common-interceptors [(body-params/body-params) http/html-body])
+(def json-interceptor [(body-params/body-params) http/json-body])
 
 ;; Tabular routes
 (def routes #{["/"               :get  (conj common-interceptors `home-page)]
+              ["/about"          :get  (conj common-interceptors `about-page)]
               ["/feedlog"        :get  (conj common-interceptors `list-feed-logs)]
               ["/feedlog/:name"  :get  (conj common-interceptors `list-feed-logs-for-a-pet)]
-              ["/feedlog"        :post (conj common-interceptors `post-feed-log)]
-              ["/about"          :get  (conj common-interceptors `about-page)]})
+              ["/feedlog"        :post (conj common-interceptors `post-feed-log)]})
 
 (def service
   {::http/routes routes
