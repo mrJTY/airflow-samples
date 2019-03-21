@@ -2,7 +2,7 @@ version: '3'
 
 services:
   # Backend database
-  postgres:
+  postgreshost:
     image: postgres:11.1
     restart: always
     environment:
@@ -18,7 +18,7 @@ services:
     build:
       context: simple-microservice
     depends_on:
-      - postgres
+      - postgreshost
     restart: always
     ports:
       - 9090:9090
@@ -28,6 +28,8 @@ services:
     build:
       context: airflow/
     restart: always
+    depends_on:
+      - postgreshost
     # Map port to host machine
     ports:
       - 8080:8080
@@ -35,9 +37,9 @@ services:
     environment:
       AIRFLOW_HOME: /opt/airflow
       # See how to manage connections: https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
-      AIRFLOW_CONN_POSTGRES_MASTER: postgres://postgres:password123@postgres:5432/db
-      AIRFLOW_CONN_HTTP_MASTER: http://microservice:9090
+      AIRFLOW_CONN_POSTGRES_CONN: postgres://postgres:password123@postgreshost:5432/db
+      AIRFLOW_CONN_HTTP_CONN: http://microservice:9090
     links:
-      - postgres
+      - postgreshost
       - microservice
 

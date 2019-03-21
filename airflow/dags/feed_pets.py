@@ -27,8 +27,8 @@ default_args = {
 
 # In this case, we are simply defining a connection ID based on environment variables passed from Docker Compose
 # https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
-HTTP_CONN_ID = "HTTP_MASTER"
-POSTGRES_CONN_ID = "POSTGRES_MASTER"
+HTTP_CONN_ID = "HTTP_CONN"
+POSTGRES_CONN_ID = "POSTGRES_CONN"
 POSTGRES_DB = "db"
 
 # Setup a DAG
@@ -56,7 +56,8 @@ def open_food():
     prob_of_failure = 0.3
 
     if random.random() < prob_of_failure:
-        logging.warning("Doh! Couldn't open can!")
+        logging.warning("Doh! Can't open can!")
+        raise Exception("Doh! Can't open can!")
     else:
         logging.info("Succesfully opened can!")
 
@@ -88,7 +89,7 @@ select
     , count(distinct feed_id) as count_of_feeds_to_date
     , max(datetimestamp) as last_feed
 from
-    feed_diary
+    feed_log
 group by
     name
 """

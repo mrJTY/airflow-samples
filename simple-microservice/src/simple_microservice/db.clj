@@ -1,7 +1,7 @@
 (ns simple-microservice.db)
 
 ;; Connection id's to connect to postgres db
-(def db_host_name "postgres")
+(def db_host_name "postgreshost")
 (def db_port 5432)
 (def db_name "")
 (def db_user "postgres")
