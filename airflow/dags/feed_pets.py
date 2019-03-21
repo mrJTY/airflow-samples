@@ -13,7 +13,7 @@ default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
     # Start from yesterday for demonstration
-    'start_date': datetime.utcnow() - timedelta(days = 1),
+    'start_date': datetime.utcnow() - timedelta(days = 5),
     'email': ['alertreceiver@example.com'],
     'email_on_failure': False,
     'email_on_retry': False,
@@ -27,16 +27,15 @@ default_args = {
 
 # In this case, we are simply defining a connection ID based on environment variables passed from Docker Compose
 # https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
-HTTP_CONN_ID = "HTTP_MASTER"
-POSTGRES_CONN_ID = "POSTGRES_MASTER"
+HTTP_CONN_ID = "HTTP_CONN"
+POSTGRES_CONN_ID = "POSTGRES_CONN"
 POSTGRES_DB = "db"
 
 # Setup a DAG
 # =============
 dag = DAG('feed_pets_dag',
         description = 'Simple tutorial DAG',
-        # Feed them every 6th hour from 7am - 7pm. Ie: 07:00, 13:00, 19:00
-        schedule_interval = '0 7-19/6 * * *',
+        schedule_interval = '0 7 * * *',
         default_args = default_args)
 
 
@@ -57,7 +56,8 @@ def open_food():
     prob_of_failure = 0.3
 
     if random.random() < prob_of_failure:
-        logging.warning("Doh! Couldn't open can!")
+        logging.warning("Doh! Can't open can!")
+        raise Exception("Doh! Can't open can!")
     else:
         logging.info("Succesfully opened can!")
 
@@ -71,12 +71,13 @@ open_food_operator = PythonOperator(python_callable = open_food, task_id = 'open
 
 # Log the feeding diary for analysis via microservice
 # =================================================
-pet_name = "Doge"
+pet_name = "doge"
 post_feed_log = SimpleHttpOperator(
     task_id='post_op',
     http_conn_id = HTTP_CONN_ID,
     endpoint='feedlog',
-    data = f"name={pet_name}",
+    # Ds is current execution macro variable: http://airflow.apache.org/code.html#default-variables
+    data = f"name={pet_name}&datetimestamp=" + "{{ ds }}",
     headers = {"Content-Type": "application/x-www-form-urlencoded"},
     dag=dag)
 
@@ -88,7 +89,7 @@ select
     , count(distinct feed_id) as count_of_feeds_to_date
     , max(datetimestamp) as last_feed
 from
-    feed_diary
+    feed_log
 group by
     name
 """
