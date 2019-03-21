@@ -33,12 +33,13 @@
 ;; Post a new feed log for a pet
 (defn post-feed-log
   [request]
-  (let [pet-name (get-in request [:query-params :name])]
-     (feed-log/insert-feed-log db/db {:name pet-name})
-     (ring-resp/response (str "insert " pet-name))))
+  (let [pet-name (get-in request [:query-params :name])
+        date-fed (get-in request [:query-params :datetimestamp])]
+     (feed-log/insert-feed-log db/db {:name pet-name :datetimestamp date-fed})
+     (ring-resp/response (str "insert " pet-name " datetimestamp " date-fed "\n"))))
 
-;;(def common-interceptors [(body-params/body-params) http/html-body])
-(def common-interceptors [])
+(def common-interceptors [(body-params/body-params) http/html-body])
+
 ;; Tabular routes
 (def routes #{["/"               :get  (conj common-interceptors `home-page)]
               ["/feedlog"        :get  (conj common-interceptors `list-feed-logs)]
@@ -48,7 +49,7 @@
 
 (def service
   {::http/routes routes
-   ::http/host "0.0.0.0"
-   ::http/type   :jetty
-   ::http/port   port})
+   ::http/host  "0.0.0.0"
+   ::http/type  :jetty
+   ::http/port  port})
 

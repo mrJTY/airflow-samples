@@ -13,7 +13,7 @@ default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
     # Start from yesterday for demonstration
-    'start_date': datetime.utcnow() - timedelta(days = 1),
+    'start_date': datetime.utcnow() - timedelta(days = 5),
     'email': ['alertreceiver@example.com'],
     'email_on_failure': False,
     'email_on_retry': False,
@@ -35,8 +35,7 @@ POSTGRES_DB = "db"
 # =============
 dag = DAG('feed_pets_dag',
         description = 'Simple tutorial DAG',
-        # Feed them every 6th hour from 7am - 7pm. Ie: 07:00, 13:00, 19:00
-        schedule_interval = '0 7-19/6 * * *',
+        schedule_interval = '0 7/19 * * *',
         default_args = default_args)
 
 
@@ -76,7 +75,8 @@ post_feed_log = SimpleHttpOperator(
     task_id='post_op',
     http_conn_id = HTTP_CONN_ID,
     endpoint='feedlog',
-    data = f"name={pet_name}",
+    # Ds is current execution macro variable: http://airflow.apache.org/code.html#default-variables
+    data = f"name={pet_name}&datetimestamp=" + "'{{ ds }}'",
     headers = {"Content-Type": "application/x-www-form-urlencoded"},
     dag=dag)
 

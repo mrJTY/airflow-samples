@@ -29,6 +29,6 @@ limit 10
 -- A :result value of :n below will return affected rows:
 -- :name insert-feed-log :! :n
 -- :doc Insert a single feed log returning affected row count
-insert into feed_log (name)
-values (:name)
+insert into feed_log (name, datetimestamp)
+values (:name, :datetimestamp)
 
