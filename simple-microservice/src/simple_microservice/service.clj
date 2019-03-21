@@ -36,7 +36,7 @@
   (let [pet-name (get-in request [:query-params :name])
         date-fed (get-in request [:query-params :datetimestamp])]
      (feed-log/insert-feed-log db/db {:name pet-name :datetimestamp date-fed})
-     (ring-resp/response (str "insert " pet-name " datetimestamp " date-fed "\n"))))
+     (ring-resp/response (str "insert " pet-name " datetimestamp " date-fed))))
 
 (def common-interceptors [(body-params/body-params) http/html-body])
 

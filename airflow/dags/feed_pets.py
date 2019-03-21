@@ -35,7 +35,7 @@ POSTGRES_DB = "db"
 # =============
 dag = DAG('feed_pets_dag',
         description = 'Simple tutorial DAG',
-        schedule_interval = '0 7/19 * * *',
+        schedule_interval = '0 7 * * *',
         default_args = default_args)
 
 
@@ -70,13 +70,13 @@ open_food_operator = PythonOperator(python_callable = open_food, task_id = 'open
 
 # Log the feeding diary for analysis via microservice
 # =================================================
-pet_name = "Doge"
+pet_name = "doge"
 post_feed_log = SimpleHttpOperator(
     task_id='post_op',
     http_conn_id = HTTP_CONN_ID,
     endpoint='feedlog',
     # Ds is current execution macro variable: http://airflow.apache.org/code.html#default-variables
-    data = f"name={pet_name}&datetimestamp=" + "'{{ ds }}'",
+    data = f"name={pet_name}&datetimestamp=" + "{{ ds }}",
     headers = {"Content-Type": "application/x-www-form-urlencoded"},
     dag=dag)
 

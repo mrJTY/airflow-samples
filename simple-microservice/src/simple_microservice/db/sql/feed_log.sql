@@ -6,7 +6,7 @@
 create table if not exists feed_log (
   id         serial primary key,
   name       varchar(40),
-  datetimestamp timestamp not null default current_timestamp
+  datetimestamp timestamp default current_timestamp
 )
 
 -- A ":result" value of ":*" specifies a vector of records
@@ -30,5 +30,5 @@ limit 10
 -- :name insert-feed-log :! :n
 -- :doc Insert a single feed log returning affected row count
 insert into feed_log (name, datetimestamp)
-values (:name, :datetimestamp)
+values (:name, :datetimestamp::timestamp)
 
