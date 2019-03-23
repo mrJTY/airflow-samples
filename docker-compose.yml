@@ -43,3 +43,11 @@ services:
       - postgreshost
       - microservice
 
+  jupyter:
+    build:
+      context: jupyter/
+    volumes:
+      - notebooks:/home/jovyan/work
+
+volumes:
+  notebooks:

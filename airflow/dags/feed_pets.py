@@ -27,9 +27,11 @@ default_args = {
 
 # In this case, we are simply defining a connection ID based on environment variables passed from Docker Compose
 # https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
-HTTP_CONN_ID = "HTTP_CONN"
-POSTGRES_CONN_ID = "POSTGRES_CONN"
-POSTGRES_DB = "db"
+HTTP_CONN_ID = 'HTTP_CONN'
+POSTGRES_CONN_ID = 'POSTGRES_CONN'
+POSTGRES_DB = 'db'
+
+PET_NAMES = ['doge', 'kitty', 'phish']
 
 # Setup a DAG
 # =============
@@ -37,7 +39,6 @@ dag = DAG('feed_pets_dag',
         description = 'Simple tutorial DAG',
         schedule_interval = '0 7 * * *',
         default_args = default_args)
-
 
 # Fetch food
 # ============
@@ -64,14 +65,14 @@ def open_food():
 open_food_operator = PythonOperator(python_callable = open_food, task_id = 'open_food', dag = dag)
 
 
-
+# Use the ds macro variable to get the dag's runtime in yyyy-mm-dd
 # https://airflow.apache.org/_modules/airflow/operators/http_operator.html
 # https://github.com/trbs/airflow-examples/blob/master/dags/example_http_operator.py
 
 
 # Log the feeding diary for analysis via microservice
 # =================================================
-pet_name = "doge"
+pet_name = random.choice(PET_NAMES)
 post_feed_log = SimpleHttpOperator(
     task_id='post_op',
     http_conn_id = HTTP_CONN_ID,
