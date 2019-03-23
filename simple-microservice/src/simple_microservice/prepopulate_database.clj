@@ -3,4 +3,6 @@
               [simple-microservice.db :as db]))
 
 (defn prepopulate-database []
-    (feed-log/create-feed-log-table db/db))
+    (println "Prepopulating feed_log table")
+    (feed-log/create-feed-log-table db/db)
+    (feed-log/insert-feed-log db/db {:name "phish" :datetimestamp "2019-01-01"}))

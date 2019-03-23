@@ -1,11 +1,11 @@
 (ns simple-microservice.db)
 
 ;; Connection id's to connect to postgres db
-(def db_host_name "postgreshost")
-(def db_port 5432)
-(def db_name "")
-(def db_user "postgres")
-(def db_password "password123")
+(def db_host_name (or (System/getenv "POSTGRES_HOST") "postgreshost"))
+(def db_port (or (System/getenv "POSTGRES_PORT") 5432))
+(def db_name (or (System/getenv "POSTGRES_DB") "db"))
+(def db_user (or (System/getenv "POSTGRES_USER") "postgres"))
+(def db_password (or (System/getenv "POSTGRES_PASSWORD") "password123"))
 
 (def db
     {
