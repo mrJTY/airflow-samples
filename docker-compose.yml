@@ -9,7 +9,6 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_DB: db
       POSTGRES_PASSWORD: password123
-    # Expose only to other containers
     ports:
       - 5432:5432
 
@@ -35,10 +34,8 @@ services:
     restart: always
     depends_on:
       - postgreshost
-    # Map port to host machine
     ports:
       - 8080:8080
-    # Environment variables
     environment:
       AIRFLOW_HOME: /opt/airflow
       # See how Airflow can manage connections: https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
@@ -48,6 +45,7 @@ services:
       - postgreshost
       - microservice
 
+  # Visualisation layer
   jupyter:
     build:
       context: jupyter/

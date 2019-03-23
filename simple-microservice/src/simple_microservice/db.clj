@@ -11,7 +11,7 @@
     {
     :classname "org.postgresql.Driver"
     :subprotocol "postgresql"
-    :subname (str "//" db_host_name ":" db_port"/")
+    :subname (str "//" db_host_name ":" db_port "/" db_name)
     :user db_user
     :password db_password})
 
