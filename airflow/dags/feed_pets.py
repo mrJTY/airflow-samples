@@ -13,24 +13,19 @@ default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
     # Start from yesterday for demonstration
-    'start_date': datetime.utcnow() - timedelta(days = 5),
+    'start_date': datetime.utcnow() - timedelta(days = 7),
     'email': ['alertreceiver@example.com'],
     'email_on_failure': False,
     'email_on_retry': False,
-    'retries': 3,
-    'retry_delay': timedelta(seconds = 2),
-    # 'queue': 'bash_queue',
-    # 'pool': 'backfill',
-    # 'priority_weight': 10,
-    # 'end_date': datetime(2016, 1, 1),
+    'retries': 1,
+    'retry_delay': timedelta(seconds = 2)
 }
 
 # In this case, we are simply defining a connection ID based on environment variables passed from Docker Compose
 # https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
 HTTP_CONN_ID = 'HTTP_CONN'
 POSTGRES_CONN_ID = 'POSTGRES_CONN'
-POSTGRES_DB = 'db'
-
+POSTGRES_DB = os.getenv('POSTGRES_DB')
 PET_NAMES = ['doge', 'kitty', 'phish']
 
 # Setup a DAG
@@ -52,17 +47,17 @@ fetch_food_operator = PythonOperator(python_callable = fetch_food, task_id = 'fe
 
 # Try to open a can
 # ==================
-def open_food():
-    logging.info("Attempting to open a can of pet food...")
-    prob_of_failure = 0.3
+def try_feed():
+    logging.info("Attempting to feed a pet...")
+    prob_of_failure = 0.5
 
     if random.random() < prob_of_failure:
-        logging.warning("Doh! Can't open can!")
-        raise Exception("Doh! Can't open can!")
+        logging.warning("Refused! Picky pet...")
+        raise Exception("Refused! Picky pet...")
     else:
-        logging.info("Succesfully opened can!")
+        logging.info("Succesfully fed!")
 
-open_food_operator = PythonOperator(python_callable = open_food, task_id = 'open_food', dag = dag)
+try_feed_operator = PythonOperator(python_callable = try_feed, task_id = 'try_feed_pet', dag = dag)
 
 
 # Use the ds macro variable to get the dag's runtime in yyyy-mm-dd
@@ -73,8 +68,8 @@ open_food_operator = PythonOperator(python_callable = open_food, task_id = 'open
 # Log the feeding diary for analysis via microservice
 # =================================================
 pet_name = random.choice(PET_NAMES)
-post_feed_log = SimpleHttpOperator(
-    task_id='post_op',
+mark_db_operator = SimpleHttpOperator(
+    task_id='mark_success_to_db',
     http_conn_id = HTTP_CONN_ID,
     endpoint='feedlog',
     # Ds is current execution macro variable: http://airflow.apache.org/code.html#default-variables
@@ -82,26 +77,34 @@ post_feed_log = SimpleHttpOperator(
     headers = {"Content-Type": "application/x-www-form-urlencoded"},
     dag=dag)
 
-# Analyse FeedDiary postgres
+# Create a fact table
 # ===========================================
-analyse_query = f"""
+query = f"""
+begin;
+drop table if exists fact_analytics;
+-- Just for demonstration... ideally this should just be inserting to the same table and not destroying it
+create table fact_analytics as
 select
     name
-    , count(distinct feed_id) as count_of_feeds_to_date
+    , count(1) as count_of_feeds
     , max(datetimestamp) as last_feed
 from
     feed_log
 group by
     name
+order by
+    name, last_feed desc
+;
+end;
 """
-analyse_operator = PostgresOperator(task_id = 'analyse_feeds',
-                                    sql = analyse_query,
+
+create_fact_table_operator = PostgresOperator(task_id = 'create_fact_table',
+                                    sql = query,
                                     dag = dag,
                                     autocommit = True,
                                     postgres_conn_id = POSTGRES_CONN_ID,
                                     database = POSTGRES_DB)
 
-
 # Define dependencies
 # ===================
-fetch_food_operator >> open_food_operator >> post_feed_log >>analyse_operator
+fetch_food_operator >> try_feed_operator >> mark_db_operator >> create_fact_table_operator

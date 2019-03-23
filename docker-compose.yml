@@ -41,6 +41,10 @@ services:
       # See how Airflow can manage connections: https://airflow.readthedocs.io/en/stable/howto/manage-connections.html
       AIRFLOW_CONN_POSTGRES_CONN: postgres://postgres:password123@postgreshost:5432/db
       AIRFLOW_CONN_HTTP_CONN: http://microservice:9090
+      POSTGRES_HOST: postgreshost
+      POSTGRES_USER: postgres
+      POSTGRES_DB: db
+      POSTGRES_PASSWORD: password123
     links:
       - postgreshost
       - microservice
