@@ -3,15 +3,23 @@
 This demonstration is meant to showcase Airflow's features.
 
 
-# Getting started
+# Quickstart
+
+Quick start script assuming you have Docker daemon running in the background
+
+```bash
+./bin/start.sh
+```
 
 The docker compose script will setup the following containers for demonstration:
 
 1) Airflow - to be used for orchestrating the workflows (Python3 container)
-2) A backend database in Postgres - this will be used for storing some data (Postgres container)
-3) A simple microservice in Clojure - to be used for interacting with the backend database (Clojure container)
+2) Postgres - this will be used for storing some data (Postgres container)
+3) Simple Microservice in Clojure - to be used for interacting with the backend database (Clojure container)
+3) Jupyter Notebook - for visual analytics
 
-In a terminal run:
+
+To start manually:
 
 ```bash
 # Start the Docker daemon if needed
@@ -26,9 +34,15 @@ sudo docker-compose up --build
 
 Visit http://localhost:8080 to view the admin panel that will orchestrate the workflows.
 
+# Visual Analytics
+
+Visit http://localhost:8888. If prompted for password, type `password`.
+
+(Not the best security but this is just a demo! See the jupyter config, there is a password hash there that can be changed)
+
 # Microservice API
 
-These are the routes
+These are the routes for the simple feed microservice
 
 ## Get top 10 most recent feed logs for all pets
 
