@@ -46,19 +46,19 @@ These are the routes for the simple feed microservice
 
 ## Get top 10 most recent feed logs for all pets
 
-```
-curl -v "http://localhost:9090/feedlog"
+```bash
+curl "http://localhost:9090/feedlog"
 ```
 
 ## Post a feed log for a pet
 
-```
-curl -v -X POST "http://localhost:9090/feedlog?name=doge&datetimestamp=2019-02-02"
+```bash
+curl -X POST --header "Content-Type: application/json" --data '{"name":"doge","datetimestamp":"2019-01-01"}' "http://localhost:9090/feedlog" 
 ```
 
 ## Get top 10 most recent logs for Doge
 
-```
-curl -v "http://localhost:9090/feedlog/doge"
-{:id 1, :name "doge", :datetimestamp #inst "2019-03-17T13:10:58.676240000-00:00"}
+```bash
+$ curl "http://localhost:9090/feedlog/doge"
+[{:id 1, :name "doge", :datetimestamp #inst "2019-03-17T13:10:58.676240000-00:00"}]
 ```

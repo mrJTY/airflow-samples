@@ -33,8 +33,8 @@
 ;; Post a new feed log for a pet
 (defn post-feed-log
   [request]
-  (let [pet-name (get-in request [:query-params :name])
-        date-fed (get-in request [:query-params :datetimestamp])]
+  (let [pet-name (get-in request [:json-params :name])
+        date-fed (get-in request [:json-params :datetimestamp])]
      (feed-log/insert-feed-log db/db {:name pet-name :datetimestamp date-fed})
      (http/json-response {:name pet-name :datetimestamp date-fed})))
 
@@ -44,9 +44,9 @@
 ;; Tabular routes
 (def routes #{["/"               :get  (conj common-interceptors `home-page)]
               ["/about"          :get  (conj common-interceptors `about-page)]
-              ["/feedlog"        :get  (conj common-interceptors `list-feed-logs)]
-              ["/feedlog/:name"  :get  (conj common-interceptors `list-feed-logs-for-a-pet)]
-              ["/feedlog"        :post (conj common-interceptors `post-feed-log)]})
+              ["/feedlog"        :get  (conj json-interceptor `list-feed-logs)]
+              ["/feedlog/:name"  :get  (conj json-interceptor `list-feed-logs-for-a-pet)]
+              ["/feedlog"        :post (conj json-interceptor `post-feed-log)]})
 
 (def service
   {::http/routes routes
