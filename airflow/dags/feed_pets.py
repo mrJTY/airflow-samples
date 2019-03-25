@@ -7,12 +7,12 @@ import logging
 import os
 from airflow.operators.postgres_operator import PostgresOperator
 from airflow.operators.http_operator import SimpleHttpOperator
+import json
 
 # Default dag settings
 default_args = {
     'owner': 'airflow',
     'depends_on_past': False,
-    # Start from yesterday for demonstration
     'start_date': datetime.utcnow() - timedelta(days = 7),
     'email': ['alertreceiver@example.com'],
     'email_on_failure': False,
@@ -73,7 +73,12 @@ mark_db_operator = SimpleHttpOperator(
     http_conn_id = HTTP_CONN_ID,
     method = "POST",
     # Ds is current execution macro variable: http://airflow.apache.org/code.html#default-variables
-    endpoint = 'feedlog' + f"?name={pet_name}&datetimestamp=" + "{{ ds }}",
+    endpoint = 'feedlog',
+    headers = {"Content-Type": "application/json"},
+    data = json.dumps({
+        'name': pet_name,
+        'datetimestamp': "{{ds}}"
+    }),
     dag=dag)
 
 # Create a fact table
